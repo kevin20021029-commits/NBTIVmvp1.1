@@ -32,8 +32,14 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
-    background: var(--bg-primary); color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    /* 参考官网:近黑底 + 薄荷/蓝/金三色低透明度光晕,避免纯黑空洞 */
+    background:
+      radial-gradient(circle at 18% 16%, rgba(0,230,138,.08), transparent 30%),
+      radial-gradient(circle at 82% 10%, rgba(145,201,255,.06), transparent 30%),
+      radial-gradient(circle at 88% 78%, rgba(215,183,104,.05), transparent 30%),
+      var(--bg-primary);
+    color: var(--text-primary);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     min-height: 100vh; display: flex; justify-content: center;
   }
   #app { width: 100%; max-width: 480px; padding: 20px 20px 90px; }
@@ -52,8 +58,17 @@
   .version { color: var(--text-disabled); font-size: 12px; }
 
   /* ---- 首页（滑动式） ---- */
-  .home-hero { text-align: center; padding: 34px 0 44px; }
-  .home-hero h1 { font-size: 46px; font-weight: 900; margin: 20px 0 12px; letter-spacing: 2px; }
+  .home-hero { text-align: center; padding: 30px 0 40px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    border: 1px solid var(--accent-25); border-radius: 999px; padding: 8px 14px;
+    background: var(--accent-dim); color: var(--accent-primary);
+    font-size: 11px; font-weight: 900; letter-spacing: .14em; }
+  .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-primary);
+    box-shadow: 0 0 24px var(--accent-primary); }
+  .home-hero::after { content: ''; display: block; width: min(420px, 80%); height: 1px;
+    margin: 0 auto; background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+    opacity: .35; }
+  .home-hero h1 { font-size: 46px; font-weight: 900; margin: 18px 0 10px; letter-spacing: -0.03em; }
   .home-hero h1 b { color: var(--accent-primary); }
   .home-hero .slogan { color: var(--text-secondary); font-size: 16px; }
   .home-hero .slogan b { color: var(--accent-primary); }
@@ -189,7 +204,7 @@
   .footer-brand p { color: var(--text-disabled); font-size: 12px; margin-top: 8px; }
   .result-head { text-align: center; padding: 8px 0 20px; }
   .result-head .type-badge { color: var(--text-secondary); font-size: 14px; letter-spacing: 2px; }
-  .result-head .persona { font-size: 52px; font-weight: 900; margin: 10px 0 4px; letter-spacing: 2px; }
+  .result-head .persona { font-size: 52px; font-weight: 900; margin: 10px 0 4px; letter-spacing: -0.02em; }
   .result-head .match { color: var(--accent-primary); font-size: 26px; font-weight: 800; }
   .card {
     background: var(--bg-card); border: 1px solid var(--border-subtle);
@@ -258,7 +273,7 @@
   .share-card-template { position: fixed; left: -9999px; top: 0; width: 750px; min-height: 1250px;
     display: flex; flex-direction: column; padding: 16px 44px 0; box-sizing: border-box;
     background: var(--bg-primary);
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    font-family: Inter, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
   /* 背景:角色位置光晕 + 双角微光,总透明度 ≤8% */
   .share-card-bg { position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 0; background:
     radial-gradient(ellipse 560px 500px at 50% 30%, var(--accent-08), transparent 70%),
@@ -277,7 +292,7 @@
     object-fit: contain; }
   /* 人格名称区(角色底部间距 36px) */
   .share-card-word { position: relative; z-index: 1; text-align: center;
-    font-family: monospace; font-size: 66px; font-weight: 900; letter-spacing: 5px;
+    font-size: 66px; font-weight: 900; letter-spacing: 0.1em; text-indent: 0.1em;
     color: var(--accent-primary); margin-top: 36px; }
   .share-card-namebar { position: relative; z-index: 1; display: flex; align-items: center;
     justify-content: center; gap: 28px; margin-top: 18px; }
@@ -342,7 +357,7 @@
     .version { font-size: 13px; }
 
     /* 首页滑动式桌面 */
-    .home-hero h1 { font-size: 72px; margin: 28px 0 14px; }
+    .home-hero h1 { font-size: 72px; margin: 26px 0 12px; letter-spacing: -0.03em; }
     .home-hero .slogan { font-size: 22px; }
     .home-hero .meta { font-size: 15px; margin: 14px 0 36px; }
     .home-hero .btn { width: 320px; margin: 0 auto; }
@@ -370,6 +385,16 @@
     .egg-wrap { max-width: 620px; margin: 0 auto; }
   }
 </style>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a4005e9244ab7fef06f8c3cd1c10e48d";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </head>
 <body>
 <div id="app">
@@ -384,6 +409,7 @@
 
   <section id="page-home" class="active">
     <div class="home-hero">
+      <div class="eyebrow"><span class="eyebrow-dot"></span>AI 驱动投资社区</div>
       <h1>金融 <b>NBTI</b></h1>
       <div class="slogan">MBTI 已经过时，<b>NBTI</b> 来了。</div>
       <div class="meta">16 题 · 5 分钟 · 16 种投资人格</div>
@@ -3551,6 +3577,7 @@ function goToPreviousQuestion() {
   renderQuestion(); /* 回填高亮由 renderQuestion 依据 userAnswers 完成 */
 }
 function startQuiz() {
+  if (window._hmt) { window._hmt.push(['_trackEvent', 'test_flow', 'start']); } /* 百度统计:开始测试 */
   userAnswers = []; current = 0;
   show('page-quiz');
   renderQuestion();
@@ -3693,6 +3720,7 @@ function finish() {
     return;
   }
   var s = score();
+  if (window._hmt) { window._hmt.push(['_trackEvent', 'test_completed', 'finish', s.code]); } /* 百度统计:完成测试(含人格代码) */
   var persona = RESULTS.results.filter(function(r) { return r.code === s.code; })[0];
   renderResult(persona, s);
 }
