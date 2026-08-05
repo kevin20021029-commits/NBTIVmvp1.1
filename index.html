@@ -395,6 +395,15 @@ var _hmt = _hmt || [];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-39RKVC66E4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-39RKVC66E4');
+</script>
 </head>
 <body>
 <div id="app">
@@ -3578,6 +3587,7 @@ function goToPreviousQuestion() {
 }
 function startQuiz() {
   if (window._hmt) { window._hmt.push(['_trackEvent', 'test_flow', 'start']); } /* 百度统计:开始测试 */
+  if (window.gtag) { gtag('event', 'test_start', { 'test_version': '16题版' }); } /* GA4:开始测试 */
   userAnswers = []; current = 0;
   show('page-quiz');
   renderQuestion();
@@ -3721,6 +3731,7 @@ function finish() {
   }
   var s = score();
   if (window._hmt) { window._hmt.push(['_trackEvent', 'test_completed', 'finish', s.code]); } /* 百度统计:完成测试(含人格代码) */
+  if (window.gtag) { gtag('event', 'test_completed', { 'test_version': '16题版', 'persona_result': s.code }); } /* GA4:完成测试 */
   var persona = RESULTS.results.filter(function(r) { return r.code === s.code; })[0];
   renderResult(persona, s);
 }
@@ -3927,11 +3938,13 @@ function generateShareCard(persona, match) {
     return html2canvas(tpl, { scale: 3, backgroundColor: '#0A0A0A', width: 750, useCORS: true });
   }).then(function(canvas) {
     shareCardUrl = canvas.toDataURL('image/png');
+    if (window.gtag) { gtag('event', 'share_card_generate_success', { 'test_version': '16题版', 'persona_result': persona.code || persona.word || '' }); } /* GA4:生成成功 */
     return true;
   }).catch(function(e) {
     shareCardUrl = null;
     /* 详细错误日志(开发排障用) */
     console.error('[shareCard] 生成失败:', e);
+    if (window.gtag) { gtag('event', 'share_card_generate_failed', { 'test_version': '16题版' }); } /* GA4:生成失败 */
     return false;
   });
 }
@@ -3939,6 +3952,7 @@ var lastShareReq = null; /* 最近一次要生成分享卡的人格 */
 var shareGenerating = false;
 function generateShareFlow() {
   if (!lastShareReq || shareGenerating) return;
+  if (window.gtag) { gtag('event', 'share_card_generate_start', { 'test_version': '16题版', 'persona_result': lastShareReq.persona.code || '' }); } /* GA4:生成开始 */
   shareGenerating = true;
   var btn = document.getElementById('btn-gen-share');
   if (btn) { btn.disabled = true; btn.textContent = '正在生成专属分享卡...'; }
