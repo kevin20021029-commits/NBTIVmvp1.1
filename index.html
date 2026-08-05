@@ -234,10 +234,7 @@
   @keyframes charTextIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
   /* ---- 分享卡预览 ---- */
-  .share-loading { display: block; color: var(--text-disabled); font-size: 13px; padding: 60px 0; }
-  .share-card-img { display: none; width: 100%; border-radius: 14px;
-    box-shadow: 0 12px 40px rgba(0,0,0,.5); margin-bottom: 10px; }
-  .share-card-img.show { display: block; }
+
 
   /* ---- 分享卡 DOM 模板(离屏,html2canvas 导出 750x1200) ---- */
   .gold { color: var(--brand-gold); font-weight: 800; }
@@ -284,20 +281,28 @@
     padding: 9px; box-sizing: border-box; }
   .share-card-qrcode img { width: 100%; height: 100%; display: block; }
 
-  /* ---- 分享卡展示弹层 ---- */
-  #share-modal { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.85);
-    display: flex; align-items: center; justify-content: center; padding: 24px;
-    opacity: 0; pointer-events: none; transition: opacity .3s ease; }
-  #share-modal.show { opacity: 1; pointer-events: auto; }
-  .share-modal-card { position: relative; width: 90%; max-width: 420px; text-align: center; }
-  .share-modal-close { position: absolute; top: -48px; right: 0; width: 40px; height: 40px;
-    border-radius: 50%; background: rgba(255,255,255,.14); border: none; color: #fff;
-    font-size: 17px; line-height: 1; cursor: pointer; }
-  #share-modal-img { width: 100%; border-radius: 14px; display: block;
-    box-shadow: 0 18px 60px rgba(0,0,0,.6); }
-  .share-modal-tip { color: var(--text-secondary); font-size: 14px; line-height: 1.8;
-    margin: 14px 0 0; }
-  .share-modal-dl { margin-top: 14px; }
+  /* ---- 分享卡预览弹层(分步预览+长按分享) ---- */
+  #sharePreviewModal { display: none; }
+  #sharePreviewModal.show { display: block; }
+  .share-preview-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85);
+    z-index: 999; transition: opacity .2s ease; }
+  .share-preview-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 1000; display: flex; flex-direction: column; align-items: center;
+    max-width: 90vw; max-height: 90vh; transition: opacity .2s ease; }
+  #sharePreviewModal.show .share-preview-content { animation: modalPreviewIn .3s ease-out; }
+  #sharePreviewModal.hide .share-preview-overlay,
+  #sharePreviewModal.hide .share-preview-content { opacity: 0; }
+  @keyframes modalPreviewIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(.9); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  .share-preview-image { max-width: 100%; max-height: 70vh; object-fit: contain;
+    border-radius: 12px; box-shadow: 0 8px 32px rgba(0,217,160,.2); }
+  .share-preview-hint { color: var(--text-secondary); font-size: 14px; margin-top: 16px;
+    text-align: center; line-height: 1.6; }
+  .share-preview-close { position: absolute; top: -40px; right: 0; background: transparent;
+    border: none; color: #fff; font-size: 24px; cursor: pointer; }
+  .share-preview-download-btn { margin-top: 20px; }
   .hint { color: var(--text-disabled); font-size: 12px; text-align: center; margin-bottom: 20px; }
 
   .note { text-align: center; color: var(--text-secondary); font-size: 13px; margin-top: 24px; line-height: 1.8; }
@@ -438,13 +443,14 @@
     </div>
   </div>
 
-  <!-- 分享卡展示弹层:可长按保存(不禁用 touch-callout) -->
-  <div id="share-modal">
-    <div class="share-modal-card">
-      <button class="share-modal-close" onclick="closeShareModal()">✕</button>
-      <img id="share-modal-img" alt="分享卡">
-      <p class="share-modal-tip" id="share-modal-tip"></p>
-      <button class="btn share-modal-dl" id="share-modal-dl" onclick="downloadCard()">下载分享图</button>
+  <!-- 分享卡预览弹层:分步预览+长按分享(不禁用 touch-callout) -->
+  <div class="share-preview-modal" id="sharePreviewModal">
+    <div class="share-preview-overlay" onclick="closeSharePreview()"></div>
+    <div class="share-preview-content">
+      <button class="share-preview-close" onclick="closeSharePreview()">✕</button>
+      <img class="share-preview-image" id="sharePreviewImg" alt="分享卡片预览">
+      <p class="share-preview-hint" id="sharePreviewHint"></p>
+      <button class="share-preview-download-btn btn" id="sharePreviewDl" onclick="sharePreviewAction()">下载分享图</button>
     </div>
   </div>
 <div id="toast"></div>
@@ -3655,14 +3661,15 @@ function renderEgg(name, note, word) {
     '<div class="egg-wrap">' +
       '<div class="egg-title">隐藏人格「' + name + '」</div>' +
       '<div class="card"><p style="text-align:center;line-height:2;">' + note + '</p></div>' +
-      '<div class="share-card-wrap"><span class="share-loading" id="share-loading">分享卡生成中…</span><img class="share-card-img" id="share-card-img" alt="分享卡"></div>' +
-      '<p class="hint">长按图片保存 · 右键另存 · 分享给朋友一起测</p>' +
+      '<div class="share-card-wrap">' +
+        '<button class="btn" id="btn-gen-share" onclick="generateShareFlow()">生成分享卡片</button>' +
+        '<p class="hint">生成后可长按保存或发送给好友</p>' +
+      '</div>' +
       '<div class="row-2">' +
-        '<button class="btn" onclick="downloadCard()">' + (isWechat ? '长按保存' : '下载图片') + '</button>' +
         '<button class="btn ghost" onclick="restart()">重新测试</button>' +
       '</div>' +
     '</div>';
-  generateShareCard({ word: word, name: name, tagline: note }, 100);
+  lastShareReq = { persona: { word: word, name: name, tagline: note }, match: 100 };
 }
 
 function renderResult(persona, s) {
@@ -3706,15 +3713,15 @@ function renderResult(persona, s) {
         deepDiveHtml(persona) +
       '</div>' +
       '<div class="result-side">' +
-        '<div class="share-card-wrap"><span class="share-loading" id="share-loading">分享卡生成中…</span><img class="share-card-img" id="share-card-img" alt="分享卡"></div>' +
-        '<p class="hint">长按图片保存 · 分享到 Ins，艾特 @neuralfintech.ai</p>' +
-        '<button class="btn" onclick="downloadCard()">' + (isWechat ? '长按保存分享卡' : '下载分享图') + '</button>' +
+        '<div class="share-card-wrap">' +
+          '<button class="btn" id="btn-gen-share" onclick="generateShareFlow()">生成分享卡片</button>' +
+          '<p class="hint">生成后可长按保存或发送给好友</p>' +
+        '</div>' +
         '<button class="btn ghost" onclick="restart()">重新测试</button>' +
       '</div>' +
     '</div>';
-  generateShareCard(persona, s.match);
+  lastShareReq = { persona: persona, match: s.match };
   track('deep_dive_preview_view', { personaCode: lastPersonaCode });
-  track('share_card_generate', { personaCode: lastPersonaCode });
 }
 
 
@@ -3774,7 +3781,9 @@ var PERSONA_IMG = {
   "DREAMER": "dreamer", "GHOST": "ghost", "YOLO": "yolo", "CHICKEN": "chicken"
 };
 var shareCardUrl = null;
-var isWechat = typeof navigator !== 'undefined' && /MicroMessenger/i.test(navigator.userAgent || '');
+function isWeChatBrowser() { return /MicroMessenger/i.test(navigator.userAgent || ''); }
+function isMobileDevice() { return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || ''); }
+var isWechat = isWeChatBrowser();
 function proofTextPlain(persona, proof) {
   var s = '全网有 ' + fmtNum(proof.total) + ' 人和你一样是「' + persona.name + '」，其中 ' +
     fmtNum(proof.discussing) + ' 人正在 NeuralFin 讨论「' + proof.topic + '」';
@@ -3839,52 +3848,80 @@ function generateShareCard(persona, match) {
   tpl.querySelector('.share-card-qrcode img').src = QR_IMG;
   tpl.querySelector('.share-card-logo').src = LOGO_SIGN;
   tpl.querySelector('#shareCardMatch').innerHTML = matchRing(match);
-  var load = document.getElementById('share-loading');
-  var preview = document.getElementById('share-card-img');
-  if (load) load.style.display = '';
-  if (preview) preview.classList.remove('show');
-  waitForImagesLoaded(tpl).then(function() {
+  return waitForImagesLoaded(tpl).then(function() {
     /* 按原始比例精算显式尺寸,防 html2canvas object-fit 渲染变形 */
     fitShareChar(tpl);
     /* 高度不预设:按 flex 内容实际撑开尺寸截图(html2canvas 默认取元素实际尺寸) */
     return html2canvas(tpl, { scale: 3, backgroundColor: '#0A0A0A', width: 750, useCORS: true });
   }).then(function(canvas) {
     shareCardUrl = canvas.toDataURL('image/png');
-    if (preview) { preview.src = shareCardUrl; preview.classList.add('show'); }
-    if (load) load.style.display = 'none';
-    showShareModal(); /* 弹层展示,微信可直接长按保存 */
+    return true;
   }).catch(function(e) {
     shareCardUrl = null;
-    if (load) load.style.display = 'none';
     /* 详细错误日志(开发排障用) */
     console.error('[shareCard] 生成失败:', e);
-    if (typeof location !== 'undefined' && location.protocol === 'file:') {
-      toast('本地直接打开无法导出分享卡,请用 http 服务器访问(如 python -m http.server)');
+    return false;
+  });
+}
+var lastShareReq = null; /* 最近一次要生成分享卡的人格 */
+var shareGenerating = false;
+function generateShareFlow() {
+  if (!lastShareReq || shareGenerating) return;
+  shareGenerating = true;
+  var btn = document.getElementById('btn-gen-share');
+  if (btn) { btn.disabled = true; btn.textContent = '正在生成专属分享卡...'; }
+  generateShareCard(lastShareReq.persona, lastShareReq.match).then(function(ok) {
+    shareGenerating = false;
+    if (btn) { btn.disabled = false; btn.textContent = '生成分享卡片'; }
+    if (ok) {
+      track('share_card_generate', { personaCode: lastShareReq.persona.code || '' });
+      openSharePreview();
     } else {
-      toast('分享卡生成失败:' + ((e && e.message) || e));
+      openSharePreviewError();
     }
   });
 }
-function showShareModal() {
-  if (!shareCardUrl) return;
-  document.getElementById('share-modal-img').src = shareCardUrl;
-  var tip = document.getElementById('share-modal-tip');
-  var dl = document.getElementById('share-modal-dl');
+function openSharePreview() {
+  var img = document.getElementById('sharePreviewImg');
+  img.style.display = '';
+  img.src = shareCardUrl;
+  var hint = document.getElementById('sharePreviewHint');
+  var dl = document.getElementById('sharePreviewDl');
+  dl.textContent = '下载分享图';
   if (isWechat) {
-    tip.textContent = '长按上方图片即可保存或发送给好友';
+    hint.textContent = '👆 长按上方图片，选择「发送给朋友」或「保存图片」';
     dl.style.display = 'none';
+  } else if (isMobileDevice()) {
+    hint.textContent = '长按图片保存，或点击下方按钮下载';
+    dl.style.display = '';
   } else {
-    tip.textContent = '点击下方按钮保存到相册，然后打开微信发送给好友吧';
+    hint.textContent = '点击下方按钮下载图片，用手机扫码分享体验更佳';
     dl.style.display = '';
   }
-  document.getElementById('share-modal').classList.add('show');
+  var m = document.getElementById('sharePreviewModal');
+  m.classList.add('show'); m.classList.remove('hide');
 }
-function closeShareModal() {
-  document.getElementById('share-modal').classList.remove('show');
+function openSharePreviewError() {
+  document.getElementById('sharePreviewImg').style.display = 'none';
+  document.getElementById('sharePreviewHint').textContent = '生成失败，请重试';
+  var dl = document.getElementById('sharePreviewDl');
+  dl.textContent = '重新生成';
+  dl.style.display = '';
+  var m = document.getElementById('sharePreviewModal');
+  m.classList.add('show'); m.classList.remove('hide');
+}
+function closeSharePreview() {
+  var m = document.getElementById('sharePreviewModal');
+  m.classList.add('hide');
+  setTimeout(function() { m.classList.remove('show'); m.classList.remove('hide'); }, 200);
+}
+function sharePreviewAction() {
+  if (!shareCardUrl) { generateShareFlow(); return; } /* 错误态:重新生成 */
+  downloadCard();
 }
 function downloadCard() {
   if (!shareCardUrl) { toast('分享卡生成中，稍等片刻…'); return; }
-  if (isWechat) { showShareModal(); return; } /* 微信:download 不稳定,引导长按保存 */
+  if (isWechat) { openSharePreview(); return; } /* 微信:download 不稳定,引导长按保存 */
   var a = document.createElement('a');
   a.download = 'neuralfin-mbti.png';
   a.href = shareCardUrl;
