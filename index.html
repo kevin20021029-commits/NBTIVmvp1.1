@@ -90,6 +90,32 @@
   .dim-simple { color: var(--text-primary); font-weight: 700; font-size: 15px; letter-spacing: 1px; padding: 22px 10px; }
   .dim-poles { color: var(--text-secondary); font-size: 12.5px; line-height: 2; }
   .dim-poles b { color: var(--text-primary); }
+  /* ---- 四种气质族群板块 ---- */
+  .clan-showcase-section { padding: 64px 16px; max-width: 900px; margin: 0 auto; text-align: center; }
+  .clan-section-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+  .clan-section-title .highlight { color: var(--accent-primary); }
+  .clan-section-subtitle { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+  .clan-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .clan-card { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 3; cursor: pointer; }
+  .clan-photo { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .clan-card:hover .clan-photo { transform: scale(1.05); }
+  .clan-overlay { position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; text-align: left; }
+  .clan-name { color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .clan-name::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-primary); margin-right: 8px; vertical-align: middle; }
+  .clan-tagline { color: var(--text-secondary); font-size: 12px; line-height: 1.4; }
+  /* 四种气质点缀色(仅小圆点,不影响主题) */
+  .clan-card[data-accent="red"] .clan-name::before { background: #E74C3C; }
+  .clan-card[data-accent="blue"] .clan-name::before { background: #4A90D9; }
+  .clan-card[data-accent="green"] .clan-name::before { background: #52C77E; }
+  .clan-card[data-accent="gold"] .clan-name::before { background: #D4A73E; }
+  @media (max-width: 480px) {
+    .clan-grid { grid-template-columns: 1fr; gap: 12px; }
+    .clan-section-title { font-size: 22px; }
+    .clan-name { font-size: 16px; }
+  }
   .p-cards { display: grid; grid-template-columns: 1fr; gap: 10px; }
   .p-card {
     background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px;
@@ -105,7 +131,7 @@
   .reveal.in { opacity: 1; transform: none; }
 
   .btn {
-    display: block; width: 100%; padding: 16px; border: none; border-radius: 14px;
+    display: block; width: 100%; padding: 16px; border: none; border-radius: 14px; text-align: center;
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-deep)); color: var(--bg-primary);
     font-size: 18px; font-weight: 800; cursor: pointer; letter-spacing: 2px;
     box-shadow: 0 8px 24px var(--accent-25); transition: transform .15s ease, opacity .2s;
@@ -127,7 +153,8 @@
     font-size: 13px; color: var(--text-secondary); letter-spacing: 1px;
   }
   #ticker .track span { margin-right: 40px; }
-  #ticker .marquee-sep { color: var(--accent-primary); } /* ✦ 分隔符品牌色 */
+  #ticker .marquee-sep { color: var(--accent-primary); vertical-align: middle; } /* ✦ 分隔符品牌色+垂直居中 */
+  #ticker .track span { vertical-align: middle; }
   @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   /* ---- 答题 ---- */
@@ -153,11 +180,11 @@
   .home-link:hover { background: var(--bg-card-alt); border-color: var(--accent-primary); }
   #progress { height: 4px; background: var(--bg-card); border-radius: 2px; overflow: hidden; margin-bottom: 30px; }
   #progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-bright)); width: 0%; transition: width .3s ease; }
-  .q-title { font-size: 20px; font-weight: 800; line-height: 1.6; margin-bottom: 26px; min-height: 96px; }
+  .q-title { font-size: 20px; font-weight: 800; line-height: 1.6; margin-bottom: 26px; min-height: 96px; word-break: break-word; overflow-wrap: break-word; }
   .opt {
     width: 100%; text-align: left; padding: 16px 18px; margin-bottom: 12px; border-radius: 14px;
     background: var(--bg-card); border: 1.5px solid var(--border-subtle);
-    color: var(--text-primary); font-size: 15.5px; line-height: 1.6; cursor: pointer;
+    color: var(--text-primary); font-size: 15.5px; line-height: 1.6; cursor: pointer; word-break: break-word; overflow-wrap: break-word;
     transition: border-color .15s, background .15s, transform .15s;
     display: flex; align-items: flex-start; gap: 12px;
   }
@@ -210,16 +237,16 @@
     border-radius: 16px; padding: 20px; margin-bottom: 14px;
   }
   .card h3 { font-size: 14px; color: var(--accent-primary); letter-spacing: 2px; margin-bottom: 12px; font-weight: 700; }
-  .card p { font-size: 15px; line-height: 1.8; color: var(--text-primary); }
+  .card p { font-size: 15px; line-height: 1.8; color: var(--text-primary); word-break: break-word; overflow-wrap: break-word; }
 
   /* ---- 结果页：社交钩子 + 深度解读截断 ---- */
-  .proof-bar { color: var(--text-primary); font-size: 15px; line-height: 1.9; }
+  .proof-bar { color: var(--text-primary); font-size: 15px; line-height: 1.9; word-break: break-word; overflow-wrap: break-word; }
   .proof-bar b { color: var(--accent-primary); font-weight: 800; }
-  .deepdive .dd-free { font-size: 15px; line-height: 1.9; color: var(--text-primary); margin-bottom: 14px; }
+  .deepdive .dd-free { font-size: 15px; line-height: 1.9; color: var(--text-primary); margin-bottom: 14px; word-break: break-word; overflow-wrap: break-word; }
   .dd-locked { position: relative; border-radius: 12px; overflow: hidden; }
   .locked-content { filter: blur(5px); user-select: none; pointer-events: none; color: var(--text-primary); }
   .locked-content h4 { color: var(--accent-primary); font-size: 14px; margin: 12px 0 4px; }
-  .locked-content p { font-size: 14px; line-height: 1.8; margin: 0 0 8px; color: var(--text-primary); }
+  .locked-content p { font-size: 14px; line-height: 1.8; margin: 0 0 8px; color: var(--text-primary); word-break: break-word; overflow-wrap: break-word; }
   .unlock-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, var(--bg-primary-0), var(--bg-primary-94) 45%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; }
   .unlock-btn { background: var(--accent-primary); color: var(--bg-primary); border: none; border-radius: 999px; padding: 12px 22px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px var(--accent-35); }
   .qr-panel { text-align: center; padding: 8px; }
@@ -235,10 +262,10 @@
   .card li { list-style: none; font-size: 15px; line-height: 1.8; color: var(--text-primary); padding-left: 18px; position: relative; margin-bottom: 6px; }
   .card li::before { content: "▸"; position: absolute; left: 0; color: var(--accent-primary); }
 
-  .dim-row { display: flex; align-items: center; gap: 10px; margin: 9px 0; }
-  .dim-label { width: 60px; font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+  .dim-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 9px 0; flex-wrap: nowrap; width: 100%; }
+  .dim-label { min-width: 52px; font-size: 12px; color: var(--text-secondary); flex-shrink: 0; white-space: nowrap; } /* 标签+数值强制同行,不折行 */
   .dim-label.r { text-align: right; }
-  .dim-bar { flex: 1; height: 10px; background: var(--bg-card); border-radius: 5px; position: relative; overflow: hidden; }
+  .dim-bar { flex: 1; min-width: 40px; height: 10px; background: var(--bg-card); border-radius: 5px; position: relative; overflow: hidden; }
   .dim-fill { height: 100%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-deep)); }
   .dim-fill-r { height: 100%; background: var(--bg-card-alt); }
 
@@ -439,6 +466,41 @@ var _hmt = _hmt || [];
       <div class="dim-cards" id="dim-cards"></div>
     </div>
 
+
+    <div class="home-section reveal" id="sec-clans">
+      <h2 class="clan-section-title">四种气质，<span class="highlight">你是哪一派</span></h2>
+      <p class="clan-section-subtitle">每一种派系，都是一种鲜明的投资性格画像</p>
+      <div class="clan-grid">
+        <div class="clan-card" data-accent="red">
+          <img src="/clans/clan-1.jpg" alt="冲动冒险派" class="clan-photo" loading="lazy">
+          <div class="clan-overlay">
+            <h3 class="clan-name">冲动冒险派</h3>
+            <p class="clan-tagline">跟着感觉走，敢想敢做，爱那种心跳的感觉</p>
+          </div>
+        </div>
+        <div class="clan-card" data-accent="blue">
+          <img src="/clans/clan-2.jpg" alt="理性分析派" class="clan-photo" loading="lazy">
+          <div class="clan-overlay">
+            <h3 class="clan-name">理性分析派</h3>
+            <p class="clan-tagline">数据说话，逻辑至上，决策前必有一张Excel</p>
+          </div>
+        </div>
+        <div class="clan-card" data-accent="green">
+          <img src="/clans/clan-3.jpg" alt="佛系情感派" class="clan-photo" loading="lazy">
+          <div class="clan-overlay">
+            <h3 class="clan-name">佛系情感派</h3>
+            <p class="clan-tagline">随缘随性，不争不抢，情绪稳定是超能力</p>
+          </div>
+        </div>
+        <div class="clan-card" data-accent="gold">
+          <img src="/clans/clan-4.jpg" alt="务实尽责派" class="clan-photo" loading="lazy">
+          <div class="clan-overlay">
+            <h3 class="clan-name">务实尽责派</h3>
+            <p class="clan-tagline">稳扎稳打，说到做到，靠谱到让人放心</p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="home-section reveal" id="sec-personas">
       <h2 class="sec-title">16 种投资人格，<b>你是哪一型？</b></h2>
       <p class="sec-sub">每种人格，都是一句扎心的真相。</p>
