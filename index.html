@@ -53,7 +53,8 @@
     padding: 10px 2px 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;
   }
   .brand { display: flex; align-items: center; gap: 8px; }
-  .brand-sign { width: auto; height: 26px; border-radius: 0; }
+  .logo-image { height: 44px; width: auto; object-fit: contain; }
+  @media (max-width: 480px) { .logo-image { height: 36px; } } /* 移动端 36px(比例 3.556:1,宽约 128px,width:auto 自动等比) */
   .brand span { color: var(--brand-gold); font-weight: 800; font-size: 15px; letter-spacing: 1px; }
   .version { color: var(--text-disabled); font-size: 12px; }
 
@@ -359,7 +360,6 @@
   @media (min-width: 768px) {
     #app { max-width: 1120px; padding: 24px 48px 80px; }
     .app-header { padding: 14px 4px 16px; margin-bottom: 28px; }
-    .brand-sign { height: 36px; }
     .brand span { font-size: 18px; }
     .version { font-size: 13px; }
 
@@ -417,7 +417,7 @@ var _hmt = _hmt || [];
 
   <header class="app-header">
     <div class="brand">
-      <img class="brand-sign" id="brand-sign" src="/NeuralFin.png" alt="NeuralFin">
+      <img class="logo-image" id="brand-sign" src="/NeuralFin.png" alt="NeuralFin">
     </div>
     <span class="version">金融 NBTI v1.0</span>
   </header>
