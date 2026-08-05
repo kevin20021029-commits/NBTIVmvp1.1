@@ -133,6 +133,17 @@
   .opt .idx { color: var(--accent-primary); font-weight: 800; flex-shrink: 0; }
   .opt:active { transform: scale(.98); }
   .opt.sel { border-color: var(--accent-primary); background: var(--accent-dim); }
+  /* ---- 中性选项(第 5 项):视觉降级,逃生口 ---- */
+  .opt-divider { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px;
+    color: var(--text-disabled); font-size: 12px; grid-column: 1 / -1; }
+  .opt-divider::before, .opt-divider::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
+  .opt-neutral { border-style: dashed; background: transparent; color: var(--text-secondary);
+    justify-content: center; font-style: italic; grid-column: 1 / -1; }
+  .opt-neutral .idx { color: var(--text-disabled); }
+  .opt.opt-neutral:hover { border-color: var(--border-subtle); background: var(--bg-card-alt); }
+  .opt-neutral.sel { border-style: solid; border-color: var(--accent-primary);
+    background: var(--accent-dim); color: var(--text-primary); }
+  .opt-neutral.sel .idx { color: var(--accent-primary); }
   .quiz-note { color: var(--text-disabled); font-size: 12.5px; margin: -16px 0 22px; text-align: center; }
   .opt.locked { pointer-events: none; }
 
@@ -2800,7 +2811,11 @@ var QUESTIONS = {
       "好嘛，第一波底裤已经被我看光了，「研究派」还是「玄学派」，我心里有数了。往下走，别怂。",
       "一半了。你到底是「赌徒」还是「苟命型」，是「闪电侠」还是「钉子户」，我已经有八成把握，但还想再确认确认。",
       "就剩四题了，撑住。这几题准备把你的「嘴上说的」和「心里想的」放在一起对账，逃不掉的。"
-    ]
+    ],
+    "neutral": {
+      "label": "说不清，好像都沾一点",
+      "halfVote": "两维各极各记 0.5 票"
+    }
   },
   "questions": [
     {
@@ -2822,6 +2837,10 @@ var QUESTIONS = {
         {
           "text": "回一句\"恭喜恭喜\"，然后默默关手机",
           "code": "RS"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+RG/RS"
         }
       ]
     },
@@ -2844,6 +2863,10 @@ var QUESTIONS = {
         {
           "text": "\"先买一点点，试试水\"",
           "code": "RS"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+RG/RS"
         }
       ]
     },
@@ -2866,6 +2889,10 @@ var QUESTIONS = {
         {
           "text": "\"算了，认怂，落袋为安\"",
           "code": "RS"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+RG/RS"
         }
       ]
     },
@@ -2888,6 +2915,10 @@ var QUESTIONS = {
         {
           "text": "《稳稳的幸福》——节奏堪比养老院纪录片",
           "code": "RS"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+RG/RS"
         }
       ]
     },
@@ -2910,6 +2941,10 @@ var QUESTIONS = {
         {
           "text": "杠杆和长持我都想要，虽然风险经理不同意",
           "code": "HH"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "RG/RS+HT/HH"
         }
       ]
     },
@@ -2932,6 +2967,10 @@ var QUESTIONS = {
         {
           "text": "保守型选手，只做超短T，赚了就跑",
           "code": "RS+HT"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "RG/RS+HT/HH"
         }
       ]
     },
@@ -2954,6 +2993,10 @@ var QUESTIONS = {
         {
           "text": "\"可以试试，反正闲钱\"",
           "code": "RS+HH"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "RG/RS+HT/HH"
         }
       ]
     },
@@ -2976,6 +3019,10 @@ var QUESTIONS = {
         {
           "text": "关掉软件，假装什么都没发生，继续长持",
           "code": "HH"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "RG/RS+HT/HH"
         }
       ]
     },
@@ -2998,6 +3045,10 @@ var QUESTIONS = {
         {
           "text": "\"天天T，天天慌，但就是停不下来\"",
           "code": "HT+FP"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "HT/HH+FC/FP"
         }
       ]
     },
@@ -3020,6 +3071,10 @@ var QUESTIONS = {
         {
           "text": "\"三年天天心慌，现在总算能睡个好觉\"",
           "code": "HT+FP"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "HT/HH+FC/FP"
         }
       ]
     },
@@ -3042,6 +3097,10 @@ var QUESTIONS = {
         {
           "text": "手机屏幕的光照着焦虑的脸，翻来覆去睡不着",
           "code": "HT+FP"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "HT/HH+FC/FP"
         }
       ]
     },
@@ -3064,6 +3123,10 @@ var QUESTIONS = {
         {
           "text": "\"他天天T，天天慌，直到最后一刻\"",
           "code": "HT+FP"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "HT/HH+FC/FP"
         }
       ]
     },
@@ -3086,6 +3149,10 @@ var QUESTIONS = {
         {
           "text": "一边骂一边翻研报找\"到底哪里错了\"",
           "code": "DR+FP"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+FC/FP"
         }
       ]
     },
@@ -3108,6 +3175,10 @@ var QUESTIONS = {
         {
           "text": "淡定收下，反正利好利空我都无所谓",
           "code": "DF+FC"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+FC/FP"
         }
       ]
     },
@@ -3130,6 +3201,10 @@ var QUESTIONS = {
         {
           "text": "平静地想\"逻辑没变，睡吧\"",
           "code": "DR+FC"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+FC/FP"
         }
       ]
     },
@@ -3152,6 +3227,10 @@ var QUESTIONS = {
         {
           "text": "情绪崩溃，怀疑自己是不是不适合炒股",
           "code": "DF+FP"
+        },
+        {
+          "text": "说不清，好像都沾一点",
+          "code": "DF/DR+FC/FP"
         }
       ]
     }
@@ -3419,8 +3498,14 @@ function renderQuestion() {
   var box = document.getElementById('q-options');
   box.innerHTML = '';
   q.options.forEach(function(opt, i) {
+    if (i === 4) { /* 第 5 项为中性选项:先插分隔线 */
+      var dv = document.createElement('div');
+      dv.className = 'opt-divider';
+      dv.innerHTML = '<span>拿不准？</span>';
+      box.appendChild(dv);
+    }
     var b = document.createElement('button');
-    b.className = 'opt';
+    b.className = 'opt' + (i === 4 ? ' opt-neutral' : '');
     b.innerHTML = '<span class="idx">' + String.fromCharCode(65 + i) + '</span><span>' + opt.text + '</span>';
     b.onclick = function() { choose(i, b); };
     box.appendChild(b);
@@ -3576,8 +3661,8 @@ function renderResult(persona, s) {
     '<div class="char-stage">' +
       '<div class="char-glow"></div>' +
       '<img class="result-character-img" loading="eager" alt="' + persona.name + '" ' +
-        'src="assets/personas/' + imgKey + '.webp" ' +
-        'onerror="this.onerror=null;console.error(\'[img] 加载失败:\',this.src);this.src=\'assets/personas/' + imgKey + '.png\';">' +
+        'src="/' + imgKey + '.webp" ' +
+        'onerror="this.onerror=null;console.error(\'[img] 加载失败:\',this.src);this.src=\'' + '/' + imgKey + '.png\';">' +
     '</div>' : '';
   document.getElementById('result-body').innerHTML =
     '<div class="result-layout">' +
@@ -3715,8 +3800,8 @@ function generateShareCard(persona, match) {
   var char = tpl.querySelector('.share-card-character');
   char.style.display = imgKey ? '' : 'none';
   if (imgKey) {
-    char.src = 'assets/personas/' + imgKey + '.webp';
-    char.onerror = function() { this.onerror = null; console.error('[shareCard] 角色图加载失败:', this.src); this.src = 'assets/personas/' + imgKey + '.png'; };
+    char.src = '/' + imgKey + '.webp';
+    char.onerror = function() { this.onerror = null; console.error('[shareCard] 角色图加载失败:', this.src); this.src = '/' + imgKey + '.png'; };
   }
   var wordEl = tpl.querySelector('.share-card-word');
   wordEl.textContent = persona.word;
