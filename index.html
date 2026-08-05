@@ -123,13 +123,11 @@
     overflow: hidden; display: flex; align-items: center;
   }
   #ticker .track {
-    display: inline-flex; white-space: nowrap; animation: tickerScroll 22s linear infinite;
+    display: inline-flex; white-space: nowrap; animation: tickerScroll 36s linear infinite;
     font-size: 13px; color: var(--text-secondary); letter-spacing: 1px;
   }
   #ticker .track span { margin-right: 40px; }
-  #ticker .up { color: #4ade80; }
-  #ticker .down { color: #f87171; }
-  #ticker .joke { color: var(--accent-primary); font-weight: 700; }
+  #ticker .marquee-sep { color: var(--accent-primary); } /* ✦ 分隔符品牌色 */
   @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   /* ---- 答题 ---- */
@@ -346,6 +344,8 @@
   .hint { color: var(--text-disabled); font-size: 12px; text-align: center; margin-bottom: 20px; }
 
   .note { text-align: center; color: var(--text-secondary); font-size: 13px; margin-top: 24px; line-height: 1.8; }
+  .egg-img { width: min(260px, 60vw); height: auto; margin: 0 auto 20px; display: block;
+    border-radius: 16px; animation: charIn .55s ease-out both; }
   .egg-title { font-size: 40px; font-weight: 900; text-align: center; margin: 30px 0 10px; color: var(--accent-primary); }
 
   #toast {
@@ -3555,19 +3555,20 @@ function initHome() {
 }
 
 function initTicker() {
-  var items = [
-    { t: '^HSI +0.42%', c: 'up' },
-    { t: 'BTC -1.8%', c: 'down' },
-    { t: 'NVDA +2.15%', c: 'up' },
-    { t: '你的钱包 -99%', c: 'joke' },
-    { t: 'NeuralFin ∞', c: 'joke' },
-    { t: 'TSLA +0.88%', c: 'up' },
-    { t: 'GME +666%', c: 'joke' }
+  /* 品牌广告跑马灯:静态文案,内容A+内容A 首尾相连实现无缝循环 */
+  var marqueeItems = [
+    '刚测完你的金融人格？无论你是稳健派还是冒险派，真正的投资进阶，从看懂市场开始',
+    'NeuralFin——AI 原生社交交易平台，为刷屏一代而生',
+    '刷屏、学习、讨论、行动、复利——把每天滑手机的碎片时间，变成你的专属金融学习闭环',
+    '关注专业人士、机构与博主，社区驱动学习，AI 把海量内容压缩成可行动的洞察',
+    '从发现到执行，同一个界面完成，学到的当下就能行动',
+    '已接入香港证监会持牌机构德林证券，受监管交易，安心起步',
+    '你的测试结果只是起点，点击下方，开启你的投资复利之旅 🚀'
   ];
-  var html = items.concat(items).map(function(x) {
-    return '<span class="' + x.c + '">' + x.t + '</span>';
-  }).join('');
-  document.getElementById('ticker-track').innerHTML = html;
+  var marqueeText = '✦ ' + marqueeItems.join(' ✦ ') + ' ✦';
+  marqueeText = marqueeText.replace(/✦/g, '<span class="marquee-sep">✦</span>'); /* 分隔符品牌色 */
+  var box = document.getElementById('ticker-track');
+  box.innerHTML = '<span>' + marqueeText + '</span><span>' + marqueeText + '</span>';
 }
 
 /* ============ 答题 ============ */
@@ -3745,6 +3746,7 @@ function renderEgg(name, note, word) {
   show('page-result');
   document.getElementById('result-body').innerHTML =
     '<div class="egg-wrap">' +
+      '<img class="egg-img" loading="eager" alt="' + name + '" src="/' + (word === 'ATM' ? 'atm' : 'abcd') + '.webp" onerror="this.onerror=null;this.src=\'/' + (word === 'ATM' ? 'atm' : 'abcd') + '.png\';">' +
       '<div class="egg-title">隐藏人格「' + name + '」</div>' +
       '<div class="card"><p style="text-align:center;line-height:2;">' + note + '</p></div>' +
       '<div class="share-card-wrap">' +
